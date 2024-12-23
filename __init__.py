@@ -1,44 +1,25 @@
-
 import requests
 import re
 import json
 import os
 
 from CTFd.utils.scores import get_team_standings
-from flask import request
-from CTFd.plugins.challenges import CHALLENGE_CLASSES, BaseChallenge
+from flask import request, render_template, jsonify, Blueprint, url_for, session, redirect
 from flask.wrappers import Response
-from CTFd.utils.dates import ctftime
+from CTFd.plugins.challenges import CHALLENGE_CLASSES, BaseChallenge
+from CTFd.utils.dates import ctftime, ctf_started, view_after_ctf, unix_time_to_utc
 from CTFd.utils import config as ctfd_config
 from CTFd.api.v1.submissions import Submission
-from CTFd.utils.user import get_current_team, get_current_user
+from CTFd.utils.user import get_current_team, get_current_user, is_admin, authed
 from CTFd.models import Challenges, Solves, Awards, Users, Teams, db, Submissions
 from functools import wraps
 from sqlalchemy import asc
-
-
-from flask import (
-    render_template,
-    jsonify,
-    Blueprint,
-    url_for,
-    session,
-    redirect,
-    request
-)
 from sqlalchemy.sql import or_
-
 from CTFd import utils, scoreboard
-from CTFd.models import db, Solves, Challenges
 from CTFd.plugins import override_template
 from CTFd.utils.config import is_scoreboard_frozen, ctf_theme, is_users_mode
 from CTFd.utils.config.visibility import challenges_visible, scores_visible
-from CTFd.utils.dates import (
-    ctf_started, ctftime, view_after_ctf, unix_time_to_utc
-)
-from CTFd.models import db
-from CTFd.utils.user import is_admin, authed
-from sqlalchemy.dialects.postgresql import JSON  # Use this if PostgreSQL
+
 
 
 sanreg = re.compile(r'(~|!|@|#|\$|%|\^|&|\*|\(|\)|\_|\+|\`|-|=|\[|\]|;|\'|,|\.|\/|\{|\}|\||:|"|<|>|\?)')
