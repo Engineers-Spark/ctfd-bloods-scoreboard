@@ -1,4 +1,4 @@
-# CTFd plugin to add blood count in scoreboard
+# CTFd scoreboard with bloods
 
 You can modify the scoreboard to your liking or theme you're using
 
