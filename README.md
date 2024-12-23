@@ -13,3 +13,5 @@ Example:
 - [ ] remove team row from FirstBlood table if team deleted
 
 - [ ] support both team and user mode
+
+- [ ] add proper error handling and multiple checks for empty queries etc..
